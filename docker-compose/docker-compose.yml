@@ -1,0 +1,21 @@
+version: '2.3'
+services:
+  identity-server:
+    image: wso2/wso2is:7.0.0
+    # command: "--debug *:9999"
+    ports:
+      - "9764:9764"
+      - "9444:9444"
+      # - "9999:9999"
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost:19443/carbon/admin/login.jsp"]
+      interval: 5s
+      timeout: 120s
+      start_period: 100s
+    environment:
+      # case sensitive list, whitespace is trimmed, separator is ';'
+      - OAUTH_TRANSCRIPTION_CLAIMS=email
+    volumes:
+      - ./conf/identity-server:/home/wso2carbon/wso2-config-volume
+      - ./persistent/repository/database:/home/wso2carbon/wso2is-7.0.0/repository/database/
+      - ./dropins/claim-transcription-jwt-issuer-1.0.0.jar:/home/wso2carbon/wso2is-7.0.0/repository/components/lib/claim-transcription-jwt-issuer-1.0.0.jar
